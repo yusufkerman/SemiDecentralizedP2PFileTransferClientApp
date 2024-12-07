@@ -238,5 +238,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MQTTConnectModule\MQTTConnectModule.csproj">
+      <Project>{cdbaa7ba-9835-4a5e-af44-cb449404b8d5}</Project>
+      <Name>MQTTConnectModule</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

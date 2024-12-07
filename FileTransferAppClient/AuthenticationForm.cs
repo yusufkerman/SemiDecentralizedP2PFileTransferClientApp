@@ -9,12 +9,14 @@ using DotNetEnv;
 using System.IO;
 using System.Diagnostics;
 using System.Drawing;
-
+using MQTTConnectModule.Contracts;
+using MQTTConnectModule;
 
 namespace FileTransferAppClient
 {
     public partial class AuthenticationForm : Form
     {
+        private IMQTTConnectionService _mqttConnectionService;
         public AuthenticationForm()
         {
             InitializeComponent();
@@ -36,6 +38,11 @@ namespace FileTransferAppClient
                 // API URL
                 string url = "https://localhost:7093/api/authentication/login";
 
+                var apiKey = Environment.GetEnvironmentVariable("API_KEY");
+
+                //Api key header içersine eklenir.
+                client.DefaultRequestHeaders.Add("x-api-key", apiKey);
+
                 // Kullanıcı adı ve şifreyi içeren JSON objesi
                 var loginData = new
                 {
@@ -55,6 +62,9 @@ namespace FileTransferAppClient
                     if (response.IsSuccessStatusCode)
                     {
                         string responseBody = await response.Content.ReadAsStringAsync();
+
+                        _mqttConnectionService = new MQTTConnectionHandler("127.0.0.1",responseBody, apiKey);
+                        await _mqttConnectionService.ConnectToMQTTServerAsync();
 
                         // Gelen body içerisinde jwt token bulunmakta, sisteme bu token kaydedilir.
                         AuthenticationManager.Instance.SetUserAuthenticationToken(responseBody);
