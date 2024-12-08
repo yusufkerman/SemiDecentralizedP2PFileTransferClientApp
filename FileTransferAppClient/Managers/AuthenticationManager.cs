@@ -1,5 +1,4 @@
-﻿using FileTransferAppClient.Contracts;
-using FileTransferAppClient.Utilities;
+﻿using FileTransferAppClient.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FileTransferAppClient.Managers
 {
-    public class AuthenticationManager : Singleton<AuthenticationManager>, IManager
+    public class AuthenticationManager : Singleton<AuthenticationManager>
     {
         public string UserToken => _userJwtToken;
         private string _userJwtToken;

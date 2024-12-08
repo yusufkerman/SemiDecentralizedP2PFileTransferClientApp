@@ -9,14 +9,12 @@ using DotNetEnv;
 using System.IO;
 using System.Diagnostics;
 using System.Drawing;
-using MQTTConnectModule.Contracts;
 using MQTTConnectModule;
 
 namespace FileTransferAppClient
 {
     public partial class AuthenticationForm : Form
     {
-        private IMQTTConnectionService _mqttConnectionService;
         public AuthenticationForm()
         {
             InitializeComponent();
@@ -33,114 +31,121 @@ namespace FileTransferAppClient
          */
         private async void LoginButtonClicked(object sender, EventArgs e)
         {
-            using (HttpClient client = new HttpClient())
+            var client = new HttpClient();
+
+            // API URI
+            string uri = "https://localhost:7093/api/authentication/login";
+
+            // API KEY
+            var apiKey = Environment.GetEnvironmentVariable("API_KEY");
+
+            //Api key header içersine eklenir.
+            client.DefaultRequestHeaders.Add("x-api-key", apiKey);
+
+            // Kullanıcı adı ve şifreyi içeren JSON objesi
+            var loginData = new
             {
-                // API URL
-                string url = "https://localhost:7093/api/authentication/login";
+                userName = userNameBox.Text, // Kullanıcı adı (burada örnek bir değer verdim)
+                password = passwordBox.Text  // Şifre (burada örnek bir değer verdim)
+            };
 
-                var apiKey = Environment.GetEnvironmentVariable("API_KEY");
+            try
+            {
+                // JSON veriyi içeren POST isteği gönder
+                var content = new StringContent(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
 
-                //Api key header içersine eklenir.
-                client.DefaultRequestHeaders.Add("x-api-key", apiKey);
+                // POST isteği gönder
+                HttpResponseMessage response = await client.PostAsync(uri, content);
 
-                // Kullanıcı adı ve şifreyi içeren JSON objesi
-                var loginData = new
+                // Cevap başarılıysa buraya gelir
+                if (response.IsSuccessStatusCode)
                 {
-                    userName = userNameBox.Text, // Kullanıcı adı (burada örnek bir değer verdim)
-                    password = passwordBox.Text  // Şifre (burada örnek bir değer verdim)
-                };
+                    string responseBody = await response.Content.ReadAsStringAsync();
 
-                try
-                {
-                    // JSON veriyi içeren POST isteği gönder
-                    var content = new StringContent(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+                    MQTTConnectionHandler.Instance.ConfigureConnection("127.0.0.1", responseBody, apiKey);
+                    await MQTTConnectionHandler.Instance.ConnectToMQTTServerAsync();
 
-                    // POST isteği gönder
-                    HttpResponseMessage response = await client.PostAsync(url, content);
+                    // Gelen body içerisinde jwt token bulunmakta, sisteme bu token kaydedilir.
+                    AuthenticationManager.Instance.SetUserAuthenticationToken(responseBody);
 
-                    // Cevap başarılıysa buraya gelir
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
+                    UpdateStatusLabel("Giriş Başarılı", true);
 
-                        _mqttConnectionService = new MQTTConnectionHandler("127.0.0.1",responseBody, apiKey);
-                        await _mqttConnectionService.ConnectToMQTTServerAsync();
+                    //Ana uygulama formu açılır
+                    var appForm = new MainApplicationForm();
+                    appForm.Show();
 
-                        // Gelen body içerisinde jwt token bulunmakta, sisteme bu token kaydedilir.
-                        AuthenticationManager.Instance.SetUserAuthenticationToken(responseBody);
-
-                        authErrorLabel.ForeColor = Color.Green;
-                        authErrorLabel.Text = "Giriş Başarılı";
-                    }
-                    else
-                    {
-                        authErrorLabel.ForeColor = Color.Red;
-                        authErrorLabel.Text = $"Hata: {response.StatusCode}";
-                    }
+                    //Giriş yapma formu kapanır
+                    this.Hide();
                 }
-                catch (Exception ex)
+                else
                 {
-                    authErrorLabel.ForeColor = Color.Red;
-                    authErrorLabel.Text = $"Bir hata oluştu: {ex.Message}";
+                    UpdateStatusLabel($"Hata: {response.StatusCode}", false);
                 }
             }
+            catch (Exception ex)
+            {
+                UpdateStatusLabel($"Bir hata oluştu: {ex.Message}", false);
+            }
+
+            client.Dispose();
         }
 
 
         private async void RegisterButtonClicked(object sender, EventArgs e)
         {
+            var client = new HttpClient();
 
+            // API URL
+            string url = "https://localhost:7093/api/authentication";
+
+            // API KEY
             var apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
-            using (HttpClient  httpClient = new HttpClient())
+            //Api key header içersine eklenir.
+            client.DefaultRequestHeaders.Add("x-api-key", apiKey);
+
+            //Registiration verisi
+            var registerData = new
             {
-                // API URL
-                string url = "https://localhost:7093/api/authentication";
+                userName = userNameBox.Text,
+                password = passwordBox.Text,
+                email = "",
+                phoneNumber = "",
+                roles = new[] { "User" }
+            };
 
-                //Api key header içersine eklenir.
-                httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
+            try
+            {
+                //Gidecek json dosyası serialize edilir
+                var jsonContent = new StringContent(
+                    JsonConvert.SerializeObject(registerData),
+                    System.Text.Encoding.UTF8,
+                    "application/json"
+                    );
 
-                //Registiration verisi
-                var registerData = new
-                {
-                    userName = userNameBox.Text,
-                    password = passwordBox.Text,
-                    email = "",
-                    phoneNumber = "",
-                    roles = new[] {"User"}
-                };
+                //Request gönderilir ve response alınır.
+                var response = await client.PostAsync(url, jsonContent);
 
-                try
-                {
-                    //Gidecek json dosyası serialize edilir
-                    var jsonContent = new StringContent(
-                        JsonConvert.SerializeObject(registerData),
-                        System.Text.Encoding.UTF8,
-                        "application/json"
-                        );
-
-                    //Request gönderilir ve response alınır.
-                    var response = await httpClient.PostAsync(url, jsonContent);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        authErrorLabel.ForeColor = Color.Green;
-                        authErrorLabel.Text = "Kayıt başarılı";
-                    }
-                    else
-                    {
-                        authErrorLabel.ForeColor = Color.Red;
-                        authErrorLabel.Text = "Kayıt Başarısız, Status : "
-                            + response.StatusCode + " , error: " + 
-                            await response.Content.ReadAsStringAsync();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    authErrorLabel.ForeColor = Color.Red;
-                    authErrorLabel.Text = "Bir sorun oluştu : " + ex.Message;
-                }
+                if (response.IsSuccessStatusCode)
+                    UpdateStatusLabel("Kayıt başarılı", true);
+                else
+                    UpdateStatusLabel("Kayıt Başarısız, Status : "
+                        + response.StatusCode + " , error: " +
+                        await response.Content.ReadAsStringAsync(), false);
             }
+            catch (Exception ex)
+            {
+                UpdateStatusLabel("Bir sorun oluştu : " + ex.Message, false);
+            }
+
+            client.Dispose();
+        }
+        private void UpdateStatusLabel(string message,bool success)
+        {
+            var color = success ? Color.Green : Color.Red;
+
+            authStatusLabel.ForeColor = color;
+            authStatusLabel.Text = message;
         }
     }
 }
