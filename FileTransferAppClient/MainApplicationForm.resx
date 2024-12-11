@@ -127,7 +127,7 @@
   <data name="refreshActiveUsersButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEIAAABCCAYAAADjVADoAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EAAACxABrSO9dQAABKRJREFUeF7t20nIHEUYxvHPfV8wi4q7B41GiSgIihIRwQXUgxcPwRXRW1QSlxA9
+        DQAACw0B7QfALAAABKRJREFUeF7t20nIHEUYxvHPfV8wi4q7B41GiSgIihIRwQXUgxcPwRXRW1QSlxA9
         RCEgUVBQ8Kwi4slEPXhQxF08CKLGqMQYDyru+xKX/yPfwPjyzHTXzFuTr8M88MNkrK7pqfRUV1XXzEwz
         zTTTVMr+OBHn4LztTOegc9E5TSQLcDvewN/4Z47ROb2O2zAf6dkDq/ED3AnMRd9jFXZHSubhBbg364KX
         cTDGir4KH8G9QZd8CH2WkbIbunwlRLoy9BUvzh1wFXaZ+oyi6DJSZ+Mq6zJ19kX9hW6RrqIdwa1oHY0T
@@ -153,7 +153,7 @@
   <data name="activeUsersPageRigth.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EAAACxABrSO9dQAABXJJREFUeF7tnTeoNFUYhq9ZMGAuREERsyDaiCDm0pxRf0EEWwsLWxURWzGhIobS
+        DQAACw0B7QfALAAABXJJREFUeF7tnTeoNFUYhq9ZMGAuREERsyDaiCDm0pxRf0EEWwsLWxURWzGhIobS
         VhDByogoWIg2BsQsgiLmrO/DZWE8953dufqdCTvfA09zdw/vhLszc745c2YjSZIkSZIkSZJkTdhXXi0f
         kq/IL+VP8u+JyrKzDqzLg/IquY8cPSfJJ+WUN35Xf5RPyBPl6DhYPi7/km7h19k/5WPyIDkKzpNfSLew
         c/JzebYclB3yN+kWcI7+IW+Sg3CjnOMhapVskxtkr3CY+l26BUo3jxpnyV7gBJ7njNV+Jg+U1eFqyi1A
@@ -182,7 +182,7 @@
   <data name="activeUsersPageLeft.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EAAACxABrSO9dQAABUxJREFUeF7tnTeoPUUUh5+ICQNmBBWxMaO1ICrYiZgTJhDB1sLCVkXEVkyoiKG0
+        DQAACw0B7QfALAAABUxJREFUeF7tnTeoPUUUh5+ICQNmBBWxMaO1ICrYiZgTJhDB1sLCVkXEVkyoiKG0
         tRTEXAhqK4bGLKKFEbO/j8eFZd5v792/nt2ZvXs++Jp373J2Z97dmTk7M7uTJEmSJEmSJEmyJRwhb5BP
         yLfk1/IX+c9M5dy5Bq7lcXm9PFw2zznyeTnnwh/qz/I5ebZsjuPks/Jv6U5+m/1LPiOPlU1wifxKupNd
         kl/Ki2VVbpW/S3eCS/RPeYeswu1yibeoTVImt8lJ4Tb1h3QnlO7eNS6Sk0ADnm3GZr+Qx8jRoTflTiDd
@@ -213,5 +213,8 @@
   </metadata>
   <metadata name="UserName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
+  </metadata>
+  <metadata name="fileSelectionDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
 </root>
